@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Bensondevs\Fiddy\Forms\Components\FiddySelect\Option;
+use Bensondevs\Fiddy\Support\Content;
+use Bensondevs\Fiddy\Support\Presenter;
+
+final class {{ class }} extends Presenter
+{
+    public function toOption(): Option
+    {
+        return Option::make($this->record->getKey())
+            ->title($this->record->name)
+            ->description($this->record->email);
+    }
+
+    public function toContent(): Content
+    {
+        return Content::make()
+            ->title($this->record->name)
+            ->description($this->record->email);
+    }
+}

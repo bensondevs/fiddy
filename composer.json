@@ -1,0 +1,69 @@
+{
+    "name": "bensondevs/fiddy",
+    "description": "Filament Interactive and Descriptive Display — rich Image, Title, and Description components for Filament.",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "BensonDevs"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "bensondevs/supercharged-enums": "^0.2.0",
+        "filament/forms": "^5.0",
+        "filament/infolists": "^5.0",
+        "filament/tables": "^5.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "squirephp/currencies-en": "^3.11"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pao": "^1.1",
+        "laravel/pint": "^1.24",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0|^5.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0|^5.0",
+        "spatie/laravel-medialibrary": "^11.23"
+    },
+    "suggest": {
+        "spatie/laravel-medialibrary": "Automatically use the default collection media as the select option image."
+    },
+    "autoload": {
+        "psr-4": {
+            "Bensondevs\\Fiddy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bensondevs\\Fiddy\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bensondevs\\Fiddy\\FiddyServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "pest",
+        "lint": [
+            "pint --parallel"
+        ],
+        "lint:check": [
+            "pint --parallel --test"
+        ],
+        "types:check": [
+            "phpstan analyse"
+        ]
+    }
+}

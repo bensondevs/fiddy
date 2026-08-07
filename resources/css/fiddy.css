@@ -1,0 +1,52 @@
+.fi-fo-select.fiddy-select .fi-select-input-option {
+    padding: 0.5rem 0.75rem;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.fi-fo-select.fiddy-select .fi-select-input-value-ctn,
+.fi-fo-select.fiddy-select .fi-select-input-value-label {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.fi-ta-filter-indicators-badges-ctn .fi-badge svg {
+    display: block;
+}
+
+.fi-in-image.fi-rounded:not(.fi-circular) img {
+    border-radius: 0.5rem;
+}
+
+.fi-in-image.fi-previewable .fi-in-image-preview-trigger {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: block;
+    line-height: 0;
+    padding: 0;
+}
+
+.fi-in-image.fi-previewable .fi-in-image-preview-trigger:focus-visible {
+    outline: 2px solid var(--primary-600, #4f46e5);
+    outline-offset: 2px;
+}
+
+.fi-in-image-preview-overlay {
+    align-items: center;
+    background-color: rgb(0 0 0 / 0.7);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: 1rem;
+    position: fixed;
+    z-index: 50;
+}
+
+.fi-in-image-preview-overlay .fi-in-image-preview {
+    border-radius: 0.5rem;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
