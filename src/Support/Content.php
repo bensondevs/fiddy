@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Bensondevs\Fiddy\Support;
 
 use BackedEnum;
+use Bensondevs\Fiddy\Concerns\HasImageDimensions;
 use Bensondevs\Fiddy\Forms\Components\FiddySelect\OptionGuesser;
 use Bensondevs\Fiddy\Models\Contracts\FiddyComponentsPresentable;
 use Filament\Support\Contracts\HasDescription;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Enums\IconSize;
+use Filament\Support\View\ComponentAttributeBag as FilamentComponentAttributeBag;
+use Filament\Support\View\Components\SectionComponent\IconComponent;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\Conditionable;
@@ -20,6 +23,7 @@ use function Filament\Support\generate_icon_html;
 final class Content
 {
     use Conditionable;
+    use HasImageDimensions;
 
     protected ?string $title = null;
 
@@ -34,6 +38,11 @@ final class Content
     protected string | BackedEnum | Htmlable | null $prefixIcon = null;
 
     protected string | BackedEnum | Htmlable | null $suffixIcon = null;
+
+    /**
+     * @var string | array<mixed> | null
+     */
+    protected string | array | null $iconColor = null;
 
     protected string | BackedEnum | Htmlable | null $titlePrefixIcon = null;
 
@@ -253,6 +262,24 @@ final class Content
         return $this;
     }
 
+    /**
+     * @param  string | array<mixed> | null  $color
+     */
+    public function iconColor(string | array | null $color): self
+    {
+        $this->iconColor = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return string | array<mixed> | null
+     */
+    public function getIconColor(): string | array | null
+    {
+        return $this->iconColor;
+    }
+
     public function icon(string | BackedEnum | Htmlable | null $icon): self
     {
         return $this->prefixIcon($icon);
@@ -448,7 +475,7 @@ final class Content
         return $this->isCircularImage() ? 'rounded-full object-cover' : 'rounded-md object-cover';
     }
 
-    protected function getMediaSize(): string
+    protected function getIconMediaSize(): string
     {
         return 'h-8 w-8';
     }
@@ -459,7 +486,7 @@ final class Content
             return null;
         }
 
-        return $this->resolveIconHtml($this->prefixIcon);
+        return $this->resolveIconHtml($this->prefixIcon, color: $this->iconColor);
     }
 
     protected function getSuffixIconHtml(): ?Htmlable
@@ -468,18 +495,29 @@ final class Content
             return null;
         }
 
-        return $this->resolveIconHtml($this->suffixIcon);
+        return $this->resolveIconHtml($this->suffixIcon, color: $this->iconColor);
     }
 
+    /**
+     * @param  string | array<mixed> | null  $color
+     */
     protected function resolveIconHtml(
         string | BackedEnum | Htmlable | null $icon,
         ?IconSize $size = null,
+        string | array | null $color = null,
     ): ?Htmlable {
         if (blank($icon)) {
             return null;
         }
 
-        return generate_icon_html($icon, size: $size);
+        $attributes = null;
+
+        if (filled($color)) {
+            $attributes = (new FilamentComponentAttributeBag)
+                ->color(IconComponent::class, $color);
+        }
+
+        return generate_icon_html($icon, attributes: $attributes, size: $size);
     }
 
     protected function getTitlePrefixIconHtml(): ?Htmlable
@@ -597,7 +635,8 @@ final class Content
             'aboveDescriptionSuffixIconHtml' => $this->getAboveDescriptionSuffixIconHtml(),
             'wrapperClass' => $this->getWrapperClass(),
             'mediaClass' => $this->getMediaClass(),
-            'mediaSize' => $this->getMediaSize(),
+            'mediaSize' => $this->getIconMediaSize(),
+            'mediaStyle' => $this->getMediaStyle(),
         ])->render();
     }
 

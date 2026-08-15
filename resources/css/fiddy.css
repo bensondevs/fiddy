@@ -10,6 +10,12 @@
     overflow: hidden;
 }
 
+.fi-fo-repeater.fiddy-repeater .fi-fo-repeater-item-header-label {
+    min-width: 0;
+    overflow: visible;
+    white-space: normal;
+}
+
 .fi-ta-filter-indicators-badges-ctn .fi-badge svg {
     display: block;
 }

@@ -150,6 +150,8 @@ Build dropdown rows with `Option::make($value)` inside closures, `toOption()`, o
 | `hint(?string, $icon = null)` | Optional 2nd arg sets hint icon |
 | `image` / `prefixImage` / `suffixImage` | Image URLs |
 | `circularImage(bool = true)` | Round media |
+| `imageWidth` / `imageHeight` / `imageSize` | Explicit image size |
+| `maxImageWidth` / `maxImageHeight` | Caps (default `2rem`) |
 | `disabled(bool\|Closure = true)` | Disable the option |
 | `tooltip(string\|Htmlable\|null)` | Hover text |
 | `icon` / `prefixIcon` / `suffixIcon` | Leading / trailing icons |
@@ -189,6 +191,34 @@ FiddyNumericInput::make('amount')
     ->spellAmount(); // optional: ->spellAmount(locale: 'id')
 ```
 
+### Repeater
+
+`FiddyRepeater` extends Filament’s repeater with rich item headers via Fiddy `Content`: label, description, prefix/suffix icons, and icon color. Closures receive the same injections as Filament’s `itemLabel` (`$state`, `$key`, `$index`, …). Nested fields used in `$state` should be `live()` so headers update as you type.
+
+```php
+use Bensondevs\Fiddy\Forms\Components\FiddyRepeater;
+use Filament\Forms\Components\TextInput;
+use Filament\Support\Icons\Heroicon;
+
+FiddyRepeater::make('products')
+    ->schema([
+        TextInput::make('title')->live(onBlur: true),
+        TextInput::make('slug')->live(onBlur: true),
+    ])
+    ->itemLabel(fn (array $state) => $state['title'] ?? null)
+    ->itemDescription(fn (array $state) => $state['slug'] ?? null)
+    ->itemPrefixIcon(Heroicon::OutlinedCube)
+    ->itemSuffixIcon(fn (array $state) => Heroicon::OutlinedArrowRight)
+    ->itemIconColor('success'); // or Closure / Filament color array
+```
+
+| Method | Types | Notes |
+| --- | --- | --- |
+| `itemLabel` | Filament `string \| Htmlable \| Closure \| null` | Inherited |
+| `itemDescription` | `string \| Closure \| null` | Secondary line under the title |
+| `itemPrefixIcon` / `itemSuffixIcon` | `string \| BackedEnum \| Htmlable \| Closure \| null` | Cell icons |
+| `itemIconColor` | `string \| array \| Closure \| null` | Colors both prefix and suffix icons |
+
 ---
 
 ## Infolists
@@ -218,7 +248,7 @@ FiddyEntry::make('author')
 
 ### Image entry
 
-`FiddyImageEntry` extends Filament’s image entry with click-to-preview (on by default) and soft `rounded()` corners alongside Filament’s `circular()`.
+`FiddyImageEntry` extends Filament’s image entry with click-to-preview (on by default) and soft `rounded()` corners alongside Filament’s `circular()`. Images are capped with `max-width` / `max-height` (default `8rem`) instead of a fixed height; use Filament’s `imageWidth()` / `imageHeight()` / `imageSize()` for explicit sizes, and Fiddy’s `maxImageWidth()` / `maxImageHeight()` to change the cap.
 
 <!-- Screenshot: rounded thumbnail and/or open lightbox preview -->
 ![Image entry](docs/images/image-entry.png)
@@ -233,6 +263,10 @@ FiddyImageEntry::make('header_image')
 FiddyImageEntry::make('avatar')
     ->circular()
     ->imageSize(40);
+
+FiddyImageEntry::make('photo')
+    ->maxImageWidth(200)
+    ->maxImageHeight(120);
 
 FiddyImageEntry::make('photo')
     ->previewable(false); // disable lightbox; ->url() also wins over preview
@@ -401,13 +435,17 @@ Content::make()
 | `prefixImage(?string $url)` | Leading image | Prefered over prefix icon when set |
 | `suffixImage(?string $url)` | Trailing image | Prefered over suffix icon when set |
 | `circularImage(bool $circular = true)` | Bool | Rounds media |
+| `imageWidth` / `imageHeight` / `imageSize` | `int\|string\|null` | Explicit size (`int` → px) |
+| `maxImageWidth` / `maxImageHeight` | `int\|string\|null` | Caps (default `2rem`) |
 
 ```php
 Content::make()
     ->title('Alice')
     ->image('https://example.com/alice.jpg')
     ->suffixImage('https://example.com/badge.png')
-    ->circularImage();
+    ->circularImage()
+    ->maxImageWidth(40)
+    ->imageHeight(40);
 ```
 
 **Icons** (prefix / suffix pairs; short aliases set the prefix)
@@ -416,6 +454,7 @@ Content::make()
 | --- | --- |
 | `icon(...)` | `prefixIcon(...)` |
 | `prefixIcon(...)` / `suffixIcon(...)` | Leading / trailing cell icon |
+| `iconColor(string \| array \| null)` | Filament color for prefix/suffix cell icons |
 | `titleIcon(...)` | `titlePrefixIcon(...)` |
 | `titlePrefixIcon(...)` / `titleSuffixIcon(...)` | Beside the title |
 | `descriptionIcon(...)` | `descriptionPrefixIcon(...)` |

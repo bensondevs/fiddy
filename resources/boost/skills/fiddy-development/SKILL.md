@@ -3,14 +3,14 @@ name: fiddy-development
 description: >-
   Build Filament UI with Fiddy rich Option/Content presentation — presenters,
   FiddyComponentsPresentable on models/enums, attribute guessing, FiddyColumn,
-  FiddySelect, filters, and timestamp components.
+  FiddySelect, FiddyRepeater, filters, and timestamp components.
 ---
 
 # Fiddy development
 
 ## When to use this skill
 
-Use when working with `FiddySelect`, `FiddySelectFilter`, `FiddyColumn`, `FiddyEntry`, `FiddyTimestampColumn` / `FiddyTimestampEntry`, `FiddyNumericInput`, `FiddyImageEntry`, presenters, `HasFiddyPresenter`, `FiddyComponentsPresentable`, or when choosing how to present related models / enums.
+Use when working with `FiddySelect`, `FiddyRepeater`, `FiddySelectFilter`, `FiddyColumn`, `FiddyEntry`, `FiddyTimestampColumn` / `FiddyTimestampEntry`, `FiddyNumericInput`, `FiddyImageEntry`, presenters, `HasFiddyPresenter`, `FiddyComponentsPresentable`, or when choosing how to present related models / enums.
 
 There is **no** `FiddyDateColumn` — use Filament date columns or `FiddyTimestampColumn` for datetime + subject/diff HTML.
 
@@ -155,6 +155,8 @@ Icons: `string|BackedEnum|Htmlable|null`.
 | `hint(?string, $icon = null)` | Optional 2nd arg sets hint icon |
 | `image` / `prefixImage` / `suffixImage` | URLs |
 | `circularImage(bool = true)` | Round media |
+| `imageWidth` / `imageHeight` / `imageSize` | Explicit image size |
+| `maxImageWidth` / `maxImageHeight` | Caps (default `2rem`) |
 | `disabled(bool\|Closure = true)` | Disable option |
 | `tooltip(string\|Htmlable\|null)` | Hover tooltip (plain text extracted from Htmlable) |
 | `icon` (= `prefixIcon`), `prefixIcon` / `suffixIcon` | Cell icons |
@@ -219,9 +221,9 @@ BelongsTo/HasOne named like the column are eager-loaded. `Content` title/descrip
 | `hint(?string $hint)` | Tertiary line |
 | `aboveTitle(?string)` / `aboveDescription(?string)` | Lines above title (timestamps) |
 
-**Media:** `image` / `prefixImage` / `suffixImage`, `circularImage(bool = true)`
+**Media:** `image` / `prefixImage` / `suffixImage`, `circularImage(bool = true)`, `imageWidth` / `imageHeight` / `imageSize`, `maxImageWidth` / `maxImageHeight` (default max `2rem`)
 
-**Icons:** `icon` (= prefix), `prefixIcon` / `suffixIcon`; `titleIcon` / `titlePrefixIcon` / `titleSuffixIcon`; same pattern for `description*`, `hint*`, `aboveTitle*`, `aboveDescription*`
+**Icons:** `icon` (= prefix), `prefixIcon` / `suffixIcon`, `iconColor(string|array|null)` (prefix/suffix cell icons); `titleIcon` / `titlePrefixIcon` / `titleSuffixIcon`; same pattern for `description*`, `hint*`, `aboveTitle*`, `aboveDescription*`
 
 Helpers: `Content::guess(Model)`, `Content::fromEnum(UnitEnum)`, `Content::resolveImageUrl(Model)` (`avatar_url`, then Spatie default collection).
 
@@ -259,5 +261,6 @@ FiddyTimestampColumn::make('created_at')
 
 ## Other components (brief)
 
+- `FiddyRepeater`: Filament repeater + rich item headers — `itemLabel`, `itemDescription`, `itemPrefixIcon` / `itemSuffixIcon` (`string|BackedEnum|Htmlable|Closure|null`), `itemIconColor(string|array|Closure|null)`. Closures get Filament’s `$state` bag; use `live()` on nested fields for live headers.
 - `FiddyNumericInput`: thousand-separator mask; `money(currency:)`, `spellAmount(locale?:)`
-- `FiddyImageEntry`: Filament image entry + `rounded()`, click-to-preview (`previewable(false)` to disable; `url()` wins over preview)
+- `FiddyImageEntry`: Filament image entry + `rounded()`, click-to-preview (`previewable(false)` to disable; `url()` wins over preview); default `maxImageWidth`/`maxImageHeight` `8rem` (Filament `imageWidth`/`imageHeight`/`imageSize` for fixed sizes)

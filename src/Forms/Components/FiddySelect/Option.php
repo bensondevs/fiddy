@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bensondevs\Fiddy\Forms\Components\FiddySelect;
 
 use BackedEnum;
+use Bensondevs\Fiddy\Concerns\HasImageDimensions;
 use Closure;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Contracts\Support\Htmlable;
@@ -15,6 +16,7 @@ use function Filament\Support\generate_icon_html;
 final class Option
 {
     use Conditionable;
+    use HasImageDimensions;
 
     protected string | int | null $value = null;
 
@@ -325,7 +327,7 @@ final class Option
         return $this->isCircularImage() ? 'rounded-full object-cover' : 'rounded-md object-cover';
     }
 
-    protected function getMediaSize(): string
+    protected function getIconMediaSize(): string
     {
         return 'h-8 w-8';
     }
@@ -433,7 +435,8 @@ final class Option
             'hintSuffixIconHtml' => $this->getHintSuffixIconHtml(),
             'wrapperClass' => $this->getWrapperClass(),
             'mediaClass' => $this->getMediaClass(),
-            'mediaSize' => $this->getMediaSize(),
+            'mediaSize' => $this->getIconMediaSize(),
+            'mediaStyle' => $this->getMediaStyle(),
         ])->render();
     }
 }

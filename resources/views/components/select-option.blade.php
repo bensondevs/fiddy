@@ -23,6 +23,7 @@
     'wrapperClass',
     'mediaClass',
     'mediaSize',
+    'mediaStyle' => '',
 ])
 
 <div
@@ -33,7 +34,8 @@
         <img
             src="{{ $prefixImage }}"
             alt="{{ $title }}"
-            class="{{ $mediaSize }} {{ $mediaClass }} mr-1 shrink-0"
+            class="{{ $mediaClass }} mr-1 shrink-0"
+            @if (filled($mediaStyle)) style="{{ $mediaStyle }}" @endif
         />
     @elseif ($prefixIconHtml)
         <span class="{{ $mediaSize }} mr-1 flex shrink-0 items-center justify-center">
@@ -145,7 +147,8 @@
         <img
             src="{{ $suffixImage }}"
             alt="{{ $title }}"
-            class="{{ $mediaSize }} {{ $mediaClass }} ml-1 shrink-0"
+            class="{{ $mediaClass }} ml-1 shrink-0"
+            @if (filled($mediaStyle)) style="{{ $mediaStyle }}" @endif
         />
     @endif
 </div>

@@ -4,7 +4,7 @@ Fiddy adds rich Image, Title, Description, hint, and icon presentation on top of
 
 ### Main components
 
-- Forms: `FiddySelect`, `FiddyNumericInput`
+- Forms: `FiddySelect`, `FiddyRepeater`, `FiddyNumericInput`
 - Infolists: `FiddyEntry`, `FiddyImageEntry`, `FiddyTimestampEntry`
 - Tables: `FiddyColumn`, `FiddyTimestampColumn`
 - Filters: `FiddySelectFilter` (dropdowns reuse select presentation; active chips use `Indicator`)

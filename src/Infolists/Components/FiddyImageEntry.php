@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bensondevs\Fiddy\Infolists\Components;
 
+use Bensondevs\Fiddy\Concerns\HasMaxImageDimensions;
+use Bensondevs\Fiddy\Support\ImageDimensions;
 use Closure;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Support\Enums\Alignment;
@@ -18,6 +20,8 @@ use function Filament\Support\generate_href_html;
 
 class FiddyImageEntry extends ImageEntry
 {
+    use HasMaxImageDimensions;
+
     protected bool | Closure $isRounded = false;
 
     protected bool | Closure $isPreviewable = true;
@@ -44,6 +48,41 @@ class FiddyImageEntry extends ImageEntry
     public function isPreviewable(): bool
     {
         return (bool) $this->evaluate($this->isPreviewable);
+    }
+
+    protected function defaultMaxImageWidth(): ?string
+    {
+        return $this->isStacked() ? '2.5rem' : '8rem';
+    }
+
+    protected function defaultMaxImageHeight(): ?string
+    {
+        return $this->isStacked() ? '2.5rem' : '8rem';
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function resolveImageDimensionStyles(): array
+    {
+        $height = $this->getImageHeight();
+        $width = $this->getImageWidth();
+        $maxWidth = $this->getMaxImageWidth();
+        $maxHeight = $this->getMaxImageHeight();
+        $isCircular = $this->isCircular();
+        $isSquare = $this->isSquare();
+
+        if (($isCircular || $isSquare) && blank($width) && filled($height)) {
+            $width = $height;
+        }
+
+        if (($isCircular || $isSquare) && blank($width) && blank($height)) {
+            $size = $maxWidth ?? $maxHeight;
+            $width = $size;
+            $height = $size;
+        }
+
+        return ImageDimensions::styles($width, $height, $maxWidth, $maxHeight);
     }
 
     public function toEmbeddedHtml(): string
@@ -108,15 +147,13 @@ class FiddyImageEntry extends ImageEntry
 
         $alignment = $this->getAlignment();
         $isCircular = $this->isCircular();
-        $isSquare = $this->isSquare();
         $isStacked = $this->isStacked();
         $isRounded = $this->isRounded() && ! $isCircular;
         $entryHasNonStateUrl = filled($this->getUrl());
         $isPreviewable = $this->isPreviewable() && ! $entryHasNonStateUrl;
         $hasLimitedRemainingText = $stateOverLimitCount && $this->hasLimitedRemainingText();
         $limitedRemainingTextSize = $this->getLimitedRemainingTextSize();
-        $height = $this->getImageHeight() ?? ($isStacked ? '2.5rem' : '8rem');
-        $width = $this->getImageWidth() ?? (($isCircular || $isSquare) ? $height : null);
+        $dimensionStyles = $this->resolveImageDimensionStyles();
 
         $attributes = $attributes
             ->class([
@@ -138,7 +175,7 @@ class FiddyImageEntry extends ImageEntry
 
         $shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab();
 
-        $formatState = function (mixed $stateItem) use ($defaultImageUrl, $width, $height, $shouldOpenUrlInNewTab, $isPreviewable): string {
+        $formatState = function (mixed $stateItem) use ($defaultImageUrl, $dimensionStyles, $shouldOpenUrlInNewTab, $isPreviewable): string {
             $imageSrc = filled($stateItem)
                 ? ($this->getImageUrl($stateItem) ?? $defaultImageUrl)
                 : $defaultImageUrl;
@@ -155,10 +192,11 @@ class FiddyImageEntry extends ImageEntry
                             }'
                         : null,
                 ], escape: false)
-                ->style([
-                    ('height: ' . e($height)) => $height,
-                    ('width: ' . e($width)) => $width,
-                ])
+                ->style(collect($dimensionStyles)
+                    ->mapWithKeys(fn (string $value, string $property): array => [
+                        ("{$property}: " . e($value)) => true,
+                    ])
+                    ->all())
                 ->toHtml()
                 . ' />';
 
@@ -186,10 +224,11 @@ class FiddyImageEntry extends ImageEntry
                     'fi-in-image-limited-remaining-text',
                     (($limitedRemainingTextSize instanceof TextSize) ? "fi-size-{$limitedRemainingTextSize->value}" : $limitedRemainingTextSize) => $limitedRemainingTextSize,
                 ])
-                ->style([
-                    ('height: ' . e($height)) => $height,
-                    ('width: ' . e($width)) => $width,
-                ])
+                ->style(collect($dimensionStyles)
+                    ->mapWithKeys(fn (string $value, string $property): array => [
+                        ("{$property}: " . e($value)) => true,
+                    ])
+                    ->all())
                 ->toHtml() ?>>
                     +<?= $stateOverLimitCount ?>
                 </div>

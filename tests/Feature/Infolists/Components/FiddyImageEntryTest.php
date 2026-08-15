@@ -105,3 +105,48 @@ it('uses a state-based url link instead of preview', function (): void {
         ->and($html)->toContain('https://example.com/header.jpg')
         ->and($html)->not->toContain('fi-in-image-preview-trigger');
 });
+
+it('defaults to max width and height without a fixed height', function (): void {
+    $entry = TestableFiddyImageEntry::make('header_image')
+        ->state('https://example.com/header.jpg')
+        ->checkFileExistence(false)
+        ->previewable(false);
+
+    $html = $entry->toEmbeddedHtml();
+
+    expect($html)->toContain('max-width: 8rem')
+        ->and($html)->toContain('max-height: 8rem')
+        ->and($html)->not->toContain('style="height:')
+        ->and($html)->not->toMatch('/(?<!max-)height:\s*8rem/');
+});
+
+it('applies explicit image height and max dimensions', function (): void {
+    $entry = TestableFiddyImageEntry::make('header_image')
+        ->state('https://example.com/header.jpg')
+        ->checkFileExistence(false)
+        ->previewable(false)
+        ->imageHeight(80)
+        ->maxImageWidth(200)
+        ->maxImageHeight(120);
+
+    $html = $entry->toEmbeddedHtml();
+
+    expect($html)->toContain('height: 80px')
+        ->and($html)->toContain('max-width: 200px')
+        ->and($html)->toContain('max-height: 120px');
+});
+
+it('forces equal width and height for circular images without explicit size', function (): void {
+    $entry = TestableFiddyImageEntry::make('avatar')
+        ->state('https://example.com/avatar.jpg')
+        ->checkFileExistence(false)
+        ->previewable(false)
+        ->circular();
+
+    $html = $entry->toEmbeddedHtml();
+
+    expect($html)->toContain('width: 8rem')
+        ->and($html)->toContain('height: 8rem')
+        ->and($html)->toContain('max-width: 8rem')
+        ->and($html)->toContain('max-height: 8rem');
+});
