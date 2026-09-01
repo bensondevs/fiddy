@@ -1,3 +1,26 @@
+/*
+ * Content / Option media uses Tailwind size utilities (h-8 w-8) rendered from PHP.
+ * Panel themes often do not scan Fiddy views, so pin dimensions in package CSS.
+ */
+img.h-8.w-8 {
+    height: 2rem;
+    width: 2rem;
+    max-height: 2rem;
+    max-width: 2rem;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+span.h-8.w-8 {
+    height: 2rem;
+    width: 2rem;
+    flex-shrink: 0;
+}
+
+.fi-loading-indicator {
+    display: none;
+}
+
 .fi-fo-select.fiddy-select .fi-select-input-option {
     padding: 0.5rem 0.75rem;
     min-width: 0;
@@ -16,7 +39,7 @@
     white-space: normal;
 }
 
-.fi-ta-filter-indicators-badges-ctn .fi-badge svg {
+.fi-ta-filter-indicators-badges-ctn .fi-badge .fi-badge-label svg {
     display: block;
 }
 
