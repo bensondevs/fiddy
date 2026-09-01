@@ -6,6 +6,7 @@ namespace Bensondevs\Fiddy;
 
 use Bensondevs\Fiddy\Commands\PresenterMakeCommand;
 use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,6 +19,7 @@ final class FiddyServiceProvider extends ServiceProvider
 
         FilamentAsset::register([
             Css::make('fiddy-styles', __DIR__ . '/../resources/css/fiddy.css'),
+            Js::make('fiddy-loading-indicators', __DIR__ . '/../resources/js/fiddy-loading-indicators.js'),
         ], package: 'bensondevs/fiddy');
 
         if ($this->app->runningInConsole()) {
