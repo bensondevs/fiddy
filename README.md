@@ -195,6 +195,9 @@ FiddyNumericInput::make('amount')
 
 `FiddyRepeater` extends Filament’s repeater with rich item headers via Fiddy `Content`: label, description, prefix/suffix icons, and icon color. Closures receive the same injections as Filament’s `itemLabel` (`$state`, `$key`, `$index`, …). Nested fields used in `$state` should be `live()` so headers update as you type.
 
+<!-- Screenshot: rich FiddyRepeater item headers -->
+![Repeater](docs/images/repeater.png)
+
 ```php
 use Bensondevs\Fiddy\Forms\Components\FiddyRepeater;
 use Filament\Forms\Components\TextInput;
